@@ -33,17 +33,17 @@ android {
     productFlavors {
         dev {
             dimension "flavor-type"
-            applicationId "com.ryalize.cbojdev"
+            applicationId "com.ryalize.nomixedev"
             resValue "string", "app_name", "Suflah o Rateb DEV"
         }
         uat {
             dimension "flavor-type"
-            applicationId "com.ryalize.cbojuat"
+            applicationId "com.ryalize.nomixestag"
             resValue "string", "app_name", "Suflah o Rateb UAT"
         }
         prod {
             dimension "flavor-type"
-            applicationId "com.ryalize.cboj"
+            applicationId "com.ryalize.prod"
             resValue "string", "app_name", "Sulfeh o Rateb"
         }
     }

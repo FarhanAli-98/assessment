@@ -1,6 +1,6 @@
 enum Flavor {
   dev,
-  uat,
+  stag,
   prod,
 }
 
@@ -13,7 +13,7 @@ class F {
     switch (appFlavor) {
       case Flavor.dev:
         return 'App DEV';
-      case Flavor.uat:
+      case Flavor.stag:
         return 'App UAT';
       case Flavor.prod:
         return 'App';
@@ -26,7 +26,7 @@ class F {
     switch (appFlavor) {
       case Flavor.dev:
         return "dev.xyz";
-      case Flavor.uat:
+      case Flavor.stag:
         return "uat.xyz";
       case Flavor.prod:
         return "prod.xyz";
@@ -34,5 +34,4 @@ class F {
         return 'dev.xyz';
     }
   }
-
 }
