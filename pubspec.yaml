@@ -63,6 +63,11 @@ dev_dependencies:
   freezed: ^2.2.0
   flutter_lints: ^2.0.0
   flutter_flavorizr: ^2.2.1
+  http_mock_adapter: ^0.4.4
+  json_serializable: ^6.5.3
+  mocktail: ^0.3.0
+  state_notifier_test: ^0.0.9
+  test_coverage_badge: ^0.2.0
 
 flutter:
   uses-material-design: true
