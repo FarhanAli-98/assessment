@@ -38,7 +38,6 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       brightness: Brightness.dark,
-      fontFamily: AppTextStyles.fontFamily,
       primaryColor: AppColors.primary,
       colorScheme: const ColorScheme.dark(
         primary: AppColors.primary,

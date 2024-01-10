@@ -87,7 +87,7 @@ class ListItemWidget extends StatelessWidget {
                           ),
                         ),
                         SvgPicture.asset(
-                          "assets/icons/Star.svg",
+                          "assets/Star.svg",
                         ),
                       ],
                     ),

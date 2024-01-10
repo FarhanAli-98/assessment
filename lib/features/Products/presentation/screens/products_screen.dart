@@ -2,29 +2,28 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:nomixe/features/dashboard/presentation/providers/dashboard_state_provider.dart';
-import 'package:nomixe/features/dashboard/presentation/providers/state/dashboard_state.dart';
+import 'package:nomixe/common/domain/models/product/product_model.dart';
+import 'package:nomixe/features/Products/presentation/providers/product_state_provider.dart';
+import 'package:nomixe/features/Products/presentation/providers/state/product_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nomixe/features/dashboard/presentation/widgets/delete_alert_dialog_widget.dart';
-import 'package:nomixe/features/dashboard/presentation/widgets/dragable_item.dart';
-import 'package:nomixe/features/dashboard/presentation/widgets/list_item_widget.dart';
-import 'package:nomixe/common/domain/models/product/selected_product_model.dart';
+import 'package:nomixe/features/Products/presentation/screens/alert_dialog.dart';
+import 'package:nomixe/features/Products/presentation/screens/dragable_item.dart';
+import 'package:nomixe/features/Products/presentation/screens/list_item_widget.dart';
 import 'package:nomixe/common/theme/app_colors.dart';
 import 'package:nomixe/common/theme/test_styles.dart';
 
 @RoutePage()
-class DashboardScreen extends ConsumerStatefulWidget {
-  static const String routeName = 'DashboardScreen';
-
-  const DashboardScreen({Key? key}) : super(key: key);
+class ProductsScreen extends ConsumerStatefulWidget {
+  const ProductsScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
+  ConsumerState<ProductsScreen> createState() => _ProductsScreenState();
 }
 
-class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+class _ProductsScreenState extends ConsumerState<ProductsScreen> {
   final scrollController = ScrollController();
   bool isEditActive = false;
+  final List<Product> selectedProduct = [];
   Timer? _debounce;
   int count = 0;
 
@@ -42,7 +41,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   void scrollControllerListener() {
     if (scrollController.position.maxScrollExtent == scrollController.offset) {
-      final notifier = ref.read(dashboardNotifierProvider.notifier);
+      final notifier = ref.read(productsNotifierProvider.notifier);
 
       notifier.fetchProducts();
     }
@@ -55,15 +54,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(dashboardNotifierProvider);
+    final state = ref.watch(productsNotifierProvider);
 
     ref.listen(
-      dashboardNotifierProvider.select((value) => value),
-      ((DashboardState? previous, DashboardState next) {
-        //show Snackbar on failure
-        if (next.state == DashboardConcreteState.fetchedAllProducts) {
-          if (next.message.isNotEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(next.message.toString())));
+      productsNotifierProvider.select((value) => value),
+      ((ProductsState? previous, ProductsState product) {
+        if (product.state == ProductsConcreteState.fetchedAllProducts) {
+          if (product.message.isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(product.message.toString())));
           }
         }
       }),
@@ -71,7 +69,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Dashboard',
+          'Products',
           style: AppTextStyles.bodyLg,
         ),
         centerTitle: true,
@@ -101,7 +99,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             child: InkWell(
               onTap: () {
                 if (state.hasData) {
-                  count = state.selectedProductModel.where((element) => element.isSelected == true).length;
+                  count = selectedProduct.length;
                   if (count != 0) {
                     DialogUtil.showDeleteDialog(
                       context: context,
@@ -110,6 +108,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       bodyText: 'Remove $count products?',
                       bodySubText: 'This action is irreversible and will permanently delete the product.',
                       onConfirm: () {
+                        state.productList.removeWhere((product) => selectedProduct.contains(product));
+                        selectedProduct.clear();
+                        setState(() {});
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('$count products removed.', style: const TextStyle(color: AppColors.white, fontSize: 14.5)),
@@ -139,7 +140,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: state.state == DashboardConcreteState.loading
+        child: state.state == ProductsConcreteState.loading
             ? const Center(child: CircularProgressIndicator())
             : state.hasData
                 ? Column(
@@ -158,26 +159,32 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
                               // return ListItemWidget(product);
                               return DraggableItemTile(
-                                child: ListItemWidget(
-                                  product,
-                                  onTapCheck: (value) {
-                                    if (value == true) {
-                                      state.selectedProductModel[index] = SelectedProductModel(isSelected: true, product: product);
+                                  child: ListItemWidget(
+                                    product,
+                                    onTapCheck: (value) {
+                                      if (value == true) {
+                                        selectedProduct.add(product);
+                                      } else {
+                                        selectedProduct.remove(product);
+                                      }
                                       setState(() {});
-                                    } else {
-                                      state.selectedProductModel[index] = SelectedProductModel(isSelected: false, product: product);
-                                      setState(() {});
-                                    }
+                                    },
+                                    isChecked: selectedProduct.contains(product),
+                                    showCheckBoxwithOverlay: isEditActive,
+                                  ),
+                                  addToDelete: () {
+                                    selectedProduct.add(product);
                                   },
-                                  isChecked: state.selectedProductModel[index].isSelected,
-                                  showCheckBoxwithOverlay: isEditActive,
-                                ),
-                              );
+                                  onDeleteTap: () {
+                                    state.productList.removeWhere((product) => selectedProduct.contains(product));
+                                    selectedProduct.clear();
+                                    setState(() {});
+                                  });
                             },
                           ),
                         ),
                       ),
-                      if (state.state == DashboardConcreteState.fetchingMore)
+                      if (state.state == ProductsConcreteState.fetchingMore)
                         const Padding(
                           padding: EdgeInsets.only(bottom: 16.0),
                           child: CircularProgressIndicator(),

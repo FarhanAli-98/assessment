@@ -3,14 +3,14 @@ import 'package:nomixe/common/domain/models/either.dart';
 import 'package:nomixe/common/domain/models/paginated_response.dart';
 import 'package:nomixe/common/exceptions/http_exception.dart';
 
-abstract class DashboardDatasource {
+abstract class ProductsDatasource {
   Future<Either<AppException, PaginatedResponse>> fetchPaginatedProducts({required int skip});
   Future<Either<AppException, PaginatedResponse>> searchPaginatedProducts({required int skip, required String query});
 }
 
-class DashboardRemoteDatasource extends DashboardDatasource {
+class ProductsRemoteDatasource extends ProductsDatasource {
   final NetworkService networkService;
-  DashboardRemoteDatasource(this.networkService);
+  ProductsRemoteDatasource(this.networkService);
 
   @override
   Future<Either<AppException, PaginatedResponse>> fetchPaginatedProducts({required int skip}) async {

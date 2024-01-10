@@ -1,3 +1,3 @@
-class AppConfigs {
+class AppUrls {
   static String baseUrl = 'https://dummyjson.com';
 }

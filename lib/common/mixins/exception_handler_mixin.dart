@@ -24,7 +24,6 @@ mixin ExceptionHandlerMixin on NetworkService {
       String message = '';
       String identifier = '';
       int statusCode = 0;
-      log(e.runtimeType.toString());
       switch (e.runtimeType) {
         case SocketException:
           e as SocketException;

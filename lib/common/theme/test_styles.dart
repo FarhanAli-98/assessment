@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AppTextStyles {
-  static const String fontFamily = 'Rubik';
-
   /// Text style for body
   static const TextStyle bodyLg = TextStyle(
     fontSize: 16,

@@ -38,7 +38,7 @@ class DialogUtil {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SvgPicture.asset(
-                    "assets/icons/Delete.svg",
+                    "assets/Delete.svg",
                     colorFilter: const ColorFilter.mode(AppColors.deleteBlueColor, BlendMode.srcIn),
                   ),
                   const SizedBox(height: 20),
@@ -68,35 +68,37 @@ class DialogUtil {
                     color: AppColors.black.withOpacity(0.4),
                   ),
                   const SizedBox(height: 5),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        TextButton(
-                          onPressed: onConfirm,
-                          child: Text(
-                            cancelButtonText,
-                            style: AppTextStyles.bodyLg.copyWith(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w500,
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          TextButton(
+                            onPressed: onConfirm,
+                            child: Text(
+                              cancelButtonText,
+                              style: AppTextStyles.bodyLg.copyWith(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 20.0,
-                        ),
-                        TextButton(
-                          onPressed: onConfirm,
-                          child: Text(
-                            confirmButtonText,
-                            style: AppTextStyles.bodyLg.copyWith(
-                              color: AppColors.deleteColor,
-                              fontWeight: FontWeight.w500,
+                          const SizedBox(
+                            width: 20.0,
+                          ),
+                          TextButton(
+                            onPressed: onConfirm,
+                            child: Text(
+                              confirmButtonText,
+                              style: AppTextStyles.bodyLg.copyWith(
+                                color: AppColors.deleteColor,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],

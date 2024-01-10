@@ -1,16 +1,15 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nomixe/features/dashboard/presentation/widgets/delete_alert_dialog_widget.dart';
+import 'package:nomixe/features/Products/presentation/screens/alert_dialog.dart';
 import 'package:nomixe/common/theme/app_colors.dart';
 
 class DraggableItemTile extends StatefulWidget {
-  const DraggableItemTile({
-    Key? key,
-    required this.child,
-    this.onDeleteTap,
-  }) : super(key: key);
+  const DraggableItemTile({Key? key, required this.child, this.onDeleteTap, this.addToDelete}) : super(key: key);
   final Widget child;
   final void Function()? onDeleteTap;
+  final void Function()? addToDelete;
 
   @override
   State<DraggableItemTile> createState() => _DraggableItemTileState();
@@ -68,33 +67,33 @@ class _DraggableItemTileState extends State<DraggableItemTile> with SingleTicker
                     top: .0,
                     bottom: .0,
                     width: constraint.maxWidth * animation.value.dx * -1,
-                    child: GestureDetector(
-                      onTap: widget.onDeleteTap,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: AppColors.deleteColorBg,
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: AppColors.deleteColorBg,
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
                         ),
-                        child: Center(
-                          child: InkWell(
-                            onTap: () {
-                              DialogUtil.showDeleteDialog(
-                                context: context,
-                                confirmButtonText: 'Remove',
-                                cancelButtonText: 'Cancel',
-                                bodyText: 'Remove product?',
-                                bodySubText: 'This action is irreversible and will permanently delete the product.',
-                                onConfirm: () {
-                                  Navigator.pop(context);
-                                },
-                              );
-                            },
-                            child: SvgPicture.asset(
-                              "assets/icons/Delete.svg",
-                            ),
+                      ),
+                      child: Center(
+                        child: InkWell(
+                          onTap: () {
+                            DialogUtil.showDeleteDialog(
+                              context: context,
+                              confirmButtonText: 'Remove',
+                              cancelButtonText: 'Cancel',
+                              bodyText: 'Remove product?',
+                              bodySubText: 'This action is irreversible and will permanently delete the product.',
+                              onConfirm: () {
+                                _controller.animateTo(.0);
+                                widget.addToDelete?.call();
+                                widget.onDeleteTap?.call();
+                                Navigator.pop(context);
+                              },
+                            );
+                          },
+                          child: SvgPicture.asset(
+                            "assets/Delete.svg",
                           ),
                         ),
                       ),
