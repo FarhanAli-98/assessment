@@ -1,8 +1,4 @@
-import 'flavors.dart';
+import 'package:nomixe/main.dart';
+import 'package:nomixe/common/env.dart';
 
-import 'main.dart' as runner;
-
-Future<void> main() async {
-  F.appFlavor = Flavor.prod;
-  await runner.main();
-}
+Future<void> main() async => mainCommon(AppEnvironment.PROD);
